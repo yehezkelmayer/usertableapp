@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Modal, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
 import axios from 'axios';
 import UserForm from './UserForm';
 import UserDetails from './UserDetails';
@@ -11,10 +11,18 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+  const [sortField, setSortField] = useState(null);
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    if (sortField) {
+      sortUsers(sortField);
+    }
+  }, [sortField]);
 
   const fetchUsers = async () => {
     try {
@@ -28,7 +36,7 @@ const App = () => {
   const addUser = async (user) => {
     try {
       await axios.post(`${API_URL}`, user);
-      fetchUsers(); 
+      fetchUsers();
       setIsModalOpen(false);
     } catch (error) {
       console.error('Error adding user:', error);
@@ -79,6 +87,15 @@ const App = () => {
     }
   };
 
+  const sortUsers = (field) => {
+    const sortedUsers = [...users].sort((a, b) => {
+      if (a[field] < b[field]) return -1;
+      if (a[field] > b[field]) return 1;
+      return 0;
+    });
+    setUsers(sortedUsers);
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.row}>
       <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">{item.firstName}</Text>
@@ -87,16 +104,26 @@ const App = () => {
       <Text style={styles.cellLarge} numberOfLines={1} ellipsizeMode="tail">{item.email}</Text>
       <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">{item.role}</Text>
       <TouchableOpacity onPress={() => showUserDetails(item)} style={styles.detailsButton}>
-        <Image
-          source={require('./assets/images/menu-image.png')}
-          style={styles.deleteIcon}
-        />
+        <Text style={styles.detailsButtonText}>Details</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => setIsSortMenuOpen(!isSortMenuOpen)} style={styles.sortButton}>
+        <Text style={styles.sortButtonText}>+ Sort By</Text>
+      </TouchableOpacity>
+      {isSortMenuOpen && (
+        <View style={styles.sortMenu}>
+          <TouchableOpacity onPress={() => { setSortField('firstName'); setIsSortMenuOpen(false); }} style={styles.sortOption}>
+            <Text style={styles.sortOptionText}>First Name</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { setSortField('lastName'); setIsSortMenuOpen(false); }} style={styles.sortOption}>
+            <Text style={styles.sortOptionText}>Last Name</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.headerRow}>
         <Text style={styles.headerCell}>First Name</Text>
         <Text style={styles.headerCell}>Last Name</Text>
@@ -158,6 +185,29 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#fff',
   },
+  sortButton: {
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+    margin: 10,
+    alignItems: 'center',
+  },
+  sortButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  sortMenu: {
+    backgroundColor: '#f8f8f8',
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+  },
+  sortOption: {
+    padding: 10,
+  },
+  sortOptionText: {
+    fontSize: 16,
+  },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -206,76 +256,84 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     fontSize: 12,
   },
-  cellLarge: {
-    flex: 2.1,
-    padding: 5,
-    textAlign: 'center',
-    borderWidth: 0.3,
-    borderColor: '#000',
-    fontSize: 12,
-  },
-  deleteButton: {
-    flex: 0.7,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 0.3,
-    borderColor: '#000',
-  },
-  deleteIcon: {
-    width: 30,
-    height: 30,
-  },
-  addButton: {
-    backgroundColor: 'blue',
-    padding: 15,
-    marginTop: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  detailsButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 0.3,
-    borderColor: '#000',
-    backgroundColor: '#ddd',
-  },
-  detailsButtonText: {
-    fontSize: 12,
-    color: '#007bff',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  modalCloseButton: {
-    backgroundColor: 'grey',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  modalCloseButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
+cell: {
+flex: 1,
+padding: 5,
+textAlign: 'center',
+borderWidth: 0.3,
+borderColor: '#000',
+fontSize: 12,
+},
+cellLarge: {
+flex: 2.1,
+padding: 5,
+textAlign: 'center',
+borderWidth: 0.3,
+borderColor: '#000',
+fontSize: 12,
+},
+deleteButton: {
+flex: 0.7,
+justifyContent: 'center',
+alignItems: 'center',
+borderWidth: 0.3,
+borderColor: '#000',
+},
+deleteIcon: {
+width: 30,
+height: 30,
+},
+addButton: {
+backgroundColor: 'blue',
+padding: 15,
+marginTop: 20,
+borderRadius: 5,
+alignItems: 'center',
+},
+addButtonText: {
+color: 'white',
+fontWeight: 'bold',
+},
+detailsButton: {
+flex: 1,
+justifyContent: 'center',
+alignItems: 'center',
+borderWidth: 0.3,
+borderColor: '#000',
+backgroundColor: '#ddd',
+},
+detailsButtonText: {
+fontSize: 12,
+color: '#007bff',
+},
+modalContent: {
+backgroundColor: 'white',
+padding: 22,
+justifyContent: 'center',
+alignItems: 'center',
+borderRadius: 4,
+borderColor: 'rgba(0, 0, 0, 0.1)',
+},
+modalBackground: {
+flex: 1,
+justifyContent: 'center',
+alignItems: 'center',
+backgroundColor: 'rgba(0, 0, 0, 0.5)',
+},
+modalText: {
+fontSize: 16,
+marginBottom: 10,
+},
+modalCloseButton: {
+backgroundColor: 'grey',
+padding: 10,
+borderRadius: 5,
+marginTop: 20,
+},
+modalCloseButtonText: {
+color: 'white',
+fontWeight: 'bold',
+},
 });
 
 export default App;
