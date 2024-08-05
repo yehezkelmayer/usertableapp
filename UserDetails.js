@@ -106,11 +106,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   input: {
-    width: '100%',
+    width: 150,
     padding: 10,
     borderWidth: 1,
     borderColor: '#000',
-    borderRadius: 5,
+    borderRadius: 15,
     marginBottom: 10,
   },
   deleteButton: {
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
-    width: '100%',
+    width: 100,
   },
   deleteButtonText: {
     color: 'white',
@@ -130,6 +130,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    width: 100,
+
   },
   updateButtonText: {
     color: 'white',
@@ -141,6 +143,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    width: 100,
+
   },
   cancelButtonText: {
     color: 'white',

@@ -4,7 +4,7 @@ import axios from 'axios';
 import UserForm from './UserForm';
 import UserDetails from './UserDetails';
 
-const API_URL = 'http://192.168.1.80:3000/users';
+const API_URL = 'http://192.168.1.9:3000/users';
 
 const App = () => {
   const [users, setUsers] = useState([]);
@@ -57,11 +57,7 @@ const App = () => {
       "Delete User",
       "Are you sure you want to delete this user?",
       [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
+        { text: "Cancel", style: "cancel" },
         { text: "OK", onPress: () => deleteUser(id) }
       ],
       { cancelable: false }
@@ -149,9 +145,7 @@ const App = () => {
         <View style={styles.modalBackground}>
           <View style={styles.modalContent}>
             <UserForm onSubmit={addUser} onClose={() => setIsModalOpen(false)} />
-            <TouchableOpacity onPress={() => setIsModalOpen(false)} style={styles.modalCloseButton}>
-              <Text style={styles.modalCloseButtonText}>Close</Text>
-            </TouchableOpacity>
+            {/* Removed redundant Close button */}
           </View>
         </View>
       </Modal>
@@ -256,84 +250,55 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     fontSize: 12,
   },
-cell: {
-flex: 1,
-padding: 5,
-textAlign: 'center',
-borderWidth: 0.3,
-borderColor: '#000',
-fontSize: 12,
-},
-cellLarge: {
-flex: 2.1,
-padding: 5,
-textAlign: 'center',
-borderWidth: 0.3,
-borderColor: '#000',
-fontSize: 12,
-},
-deleteButton: {
-flex: 0.7,
-justifyContent: 'center',
-alignItems: 'center',
-borderWidth: 0.3,
-borderColor: '#000',
-},
-deleteIcon: {
-width: 30,
-height: 30,
-},
-addButton: {
-backgroundColor: 'blue',
-padding: 15,
-marginTop: 20,
-borderRadius: 5,
-alignItems: 'center',
-},
-addButtonText: {
-color: 'white',
-fontWeight: 'bold',
-},
-detailsButton: {
-flex: 1,
-justifyContent: 'center',
-alignItems: 'center',
-borderWidth: 0.3,
-borderColor: '#000',
-backgroundColor: '#ddd',
-},
-detailsButtonText: {
-fontSize: 12,
-color: '#007bff',
-},
-modalContent: {
-backgroundColor: 'white',
-padding: 22,
-justifyContent: 'center',
-alignItems: 'center',
-borderRadius: 4,
-borderColor: 'rgba(0, 0, 0, 0.1)',
-},
-modalBackground: {
-flex: 1,
-justifyContent: 'center',
-alignItems: 'center',
-backgroundColor: 'rgba(0, 0, 0, 0.5)',
-},
-modalText: {
-fontSize: 16,
-marginBottom: 10,
-},
-modalCloseButton: {
-backgroundColor: 'grey',
-padding: 10,
-borderRadius: 5,
-marginTop: 20,
-},
-modalCloseButtonText: {
-color: 'white',
-fontWeight: 'bold',
-},
+  cellLarge: {
+    flex: 2.1,
+    padding: 5,
+    textAlign: 'center',
+    borderWidth: 0.3,
+    borderColor: '#000',
+    fontSize: 12,
+  },
+  addButton: {
+    backgroundColor: 'blue',
+    padding: 15,
+    marginTop: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  detailsButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.3,
+    borderColor: '#000',
+    backgroundColor: '#ddd',
+  },
+  detailsButtonText: {
+    fontSize: 12,
+    color: '#007bff',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
 });
 
 export default App;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-const UserForm = ({onSubmit, onClose }) => {
+const UserForm = ({ onSubmit, onClose }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -18,6 +18,22 @@ const UserForm = ({onSubmit, onClose }) => {
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const handleFirstNameChange = (text) => {
+    // Regex to allow only English letters
+    const regex = /^[A-Za-z]*$/;
+    if (regex.test(text) || text === '') {
+      setFirstName(text);
+    }
+  };
+
+  const handleLastNameChange = (text) => {
+    // Regex to allow only English letters
+    const regex = /^[A-Za-z]*$/;
+    if (regex.test(text) || text === '') {
+      setLastName(text);
+    }
   };
 
   const handleSubmit = () => {
@@ -44,14 +60,17 @@ const UserForm = ({onSubmit, onClose }) => {
       <TextInput
         placeholder="First Name"
         value={firstName}
-        onChangeText={setFirstName}
+        onChangeText={handleFirstNameChange}
         style={styles.input}
+        onSubmitEditing={() => { lastNameInput.focus(); }}
       />
       <TextInput
+        ref={(input) => { lastNameInput = input; }}
         placeholder="Last Name"
         value={lastName}
-        onChangeText={setLastName}
+        onChangeText={handleLastNameChange}
         style={styles.input}
+        onSubmitEditing={handleSubmit}
       />
       <TextInput
         placeholder="Phone Number"
@@ -112,7 +131,7 @@ const UserForm = ({onSubmit, onClose }) => {
 
 const styles = StyleSheet.create({
   form: {
-    width: '100%',
+    width: 220,
   },
   input: {
     borderWidth: 1,
@@ -152,6 +171,13 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: 'blue',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  closeButton: {
+    backgroundColor: 'gray',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
